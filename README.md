@@ -10,7 +10,7 @@ You can run this application in your Kubernetes cluster as per the instructions 
 
 ## Docker image setup (optional)
 
-YOu can use the two sample Dockerfiles provided here to create your own images. The Dockerfiles use a two stage build to setup the enviornment. 
+You can use the two sample Dockerfiles provided here to create your own images. The Dockerfiles use a two stage build to setup the enviornment. 
 * Lines 1-3 are used to setup the enviornment and compile the ttyd binary. 
 * Lines 5-14 are used to create the final base image, using the Ubuntu base image, required binares and software packages necessary to perform troubleshooting/debugging activities as well as the ttyd binary from the first step.
 * Lines 16-22 sets up the configuration for the container image. 
@@ -31,4 +31,6 @@ docker run -p 80:7681 [container_image:tag]
 Now access the kube-shell application on a client browser by navigating to http://[IPADDRESS_1 or HOSTNAME ]
 
 ## Running in a Kubernetes cluster
+
+Use the 2 sample YAML files provided to run the app within a Kubernetes cluster (with SSL or without SSL support). As mentioned previously, the current setup uses service type `LoadBalancer` to expose the application but can be tweaked to be exposed by an `Ingress` object. 
 
