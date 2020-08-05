@@ -15,4 +15,12 @@ YOu can use the two sample Dockerfiles provided here to create your own images. 
 * Lines 5-14 are used to create the final base image, using the Ubuntu base image, required binares and software packages necessary to perform troubleshooting/debugging activities as well as the ttyd binary from the first step.
 * Lines 16-22 sets up the configuration for the container image. 
 
+The container image can be executed directly on a system [IPADDRESS_1 / hostname] running Docker - 
+
+with SSL
+```
+docker run -p 443:7681 -v [path to ssl certs]:/etc/ttyd_certs:ro  [container_image:tag]
+```
+access the application on a client browser by navigating to https://[IPADDRESS_1 /hostname]
+
 
