@@ -10,4 +10,9 @@ You can run this container in your Kubernetes cluster as per the instructions pr
 
 ## Docker image setup (optional)
 
-YOu can use the two sample Dockerfiles provided here to create your own images. 
+YOu can use the two sample Dockerfiles provided here to create your own images. The Dockerfiles use a two stage build to setup the enviornment. 
+* Lines 1-3 are used to setup the enviornment and compile the ttyd binary. 
+* Lines 5-14 are used to create the final base image, using the Ubuntu base image, required binares and software packages necessary to perform troubleshooting/debugging activities as well as the ttyd binary from the first step.
+* Lines 16-22 sets up the configuration for the container image. 
+
+
