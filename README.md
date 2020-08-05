@@ -8,3 +8,6 @@ How about we run this debugging process the same way we run applications within 
 
 You can run this container in your Kubernetes cluster as per the instructions provided below or follow the directions to build your own container images with your site specific customizations and then run them as an application within your Kubernetes cluster. The example provided here uses the service type `LoadBalancer` to expose the application but can be modified to be exposed as an `Ingress` object easily. The solution presented here provided both SSL and non-SSL based web access to the Shell application. 
 
+## Docker image setup (optional)
+
+YOu can use the two sample Dockerfiles provided here to create your own images. 
