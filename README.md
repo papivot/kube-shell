@@ -35,5 +35,5 @@ Now access the kube-shell application on a client browser by navigating to http:
 Use the 2 sample YAML files provided to run the app within a Kubernetes cluster (with SSL or without SSL support). As mentioned previously, the current setup uses service type `LoadBalancer` to expose the application but can be tweaked to be exposed by an `Ingress` object. 
 
 ```
-kubectl -n kube-shell create secret tls ssl-pem --cert=fullchain.pem --key=privkey.pem
+kubectl -n kube-shell create secret tls ssl-pem --cert=tls.crt --key=tls.key
 ```
