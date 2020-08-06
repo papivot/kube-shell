@@ -118,16 +118,10 @@ spec:
           runAsNonRoot: false
           #runAsNonRoot: true
           #runAsUser: 9999
-        volumeMounts:
-        - mountPath: /user/k8soper
-          name: cache-volume
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
         stdin: true
         tty: true
-      volumes:
-      - name: cache-volume
-        emptyDir: {}
       dnsPolicy: ClusterFirst
       schedulerName: default-scheduler
       securityContext: {}
