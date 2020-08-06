@@ -23,14 +23,14 @@ You can use the two sample Dockerfiles provided here to create your own images. 
 
 The container image can be executed directly on a system [IPADDRESS_1 or HOSTNAME ] running Docker - 
 
-With SSL
+#### With SSL
 ```
 docker run -p 443:7681 -v [path to ssl certs]:/etc/ttyd_certs:ro  [container_image:tag]
 ```
 where [path to ssl certs] contains the SSL cert and its private key file. This is mounted to /etc/ttyd_certs folder during the execution.
 Now access the kube-shell application on a client browser by navigating to https://[IPADDRESS_1 or HOSTNAME ]
 
-Without SSL
+#### Without SSL
 ```
 docker run -p 80:7681 [container_image:tag]
 ```
@@ -41,7 +41,7 @@ Now access the kube-shell application on a client browser by navigating to http:
 Use the 2 sample YAML files provided to run the app within a Kubernetes cluster (with SSL or without SSL support). As mentioned previously, the current setup uses service type `LoadBalancer` to expose the application but can be tweaked to be exposed by an `Ingress` object.
 If you are creating your own container images, you will need to modify the yaml files to point to the new image locations. 
 
-Without SSL - 
+#### Without SSL
 
 ```
 kubectl apply -f kube-shell-http.yaml
@@ -55,7 +55,7 @@ kube-shell   LoadBalancer   10.99.12.163   35.239.42.201   80:30390/TCP   17m
 ```
 Modify your DNS to point to the new external IP address reported by the service `kube-shell`
 
-With SSL - 
+#### With SSL 
 
 Create a Kubernetes secret with the tls.crt and tls.key file. YOu may need to create a `kube-shell`, if it has not already been created.  
 ```
