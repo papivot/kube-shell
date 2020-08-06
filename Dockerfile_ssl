@@ -17,6 +17,6 @@ EXPOSE 7681
 ENTRYPOINT ["/sbin/tini", "--"]
 
 # Uncomment below line if using SSL
-CMD ["ttyd", "--ssl", "--ssl-cert", "/etc/ttyd_certs/fullchain.pem", "--ssl-key", "/etc/ttyd_certs/privkey.pem", "bash"]
+CMD ["ttyd", "--ssl", "--ssl-cert", "/etc/ttyd_certs/tls.crt", "--ssl-key", "/etc/ttyd_certs/tls.key", "bash"]
 # Uncomment below line if not using SSL
 # CMD ["ttyd", "bash"]
