@@ -12,8 +12,8 @@ You can run this application in your Kubernetes cluster as per the instructions 
 
 You can use the two sample Dockerfiles provided here to create your own images. The Dockerfiles use a two stage build to setup the enviornment. 
 * Lines 1-3 are used to setup the enviornment and compile the ttyd binary. 
-* Lines 5-14 are used to create the final base image, using the Ubuntu base image, required binares and software packages necessary to perform troubleshooting/debugging activities as well as the ttyd binary from the first step.
-* Lines 16-22 sets up the configuration for the container image. 
+* Lines 5-14 are used to create the final base image, using the Ubuntu base image, required binares and software packages necessary to perform troubleshooting/debugging activities as well as the ttyd binary from the first step. Modify these lines to add /modify binaries and utilities of your choice. 
+* Lines 16-22 sets up the configuration for the container image. Modify these lines to configure the ttyd settings and enable/disable SSL.
 
 The container image can be executed directly on a system [IPADDRESS_1 or HOSTNAME ] running Docker - 
 
