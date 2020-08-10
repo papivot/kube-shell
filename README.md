@@ -9,7 +9,7 @@ How about we run this debugging process the same way we run applications within 
 You can run this application in your Kubernetes cluster as per the instructions provided below or follow the directions to build your own container images with your site specific customizations and then run them as an application within your Kubernetes cluster. The example provided here uses the service type `LoadBalancer` to expose the application but can be modified to be exposed as an `Ingress` object easily. The solution presented here provided both SSL and non-SSL based web access to the Shell application. 
 
 ### Sample use cases 
-(NOT FOR PRODUCTION USE CASE BUT FOR TROUBLESHOOTING AND DEMO)
+(NOT FOR PRODUCTION USE BUT FOR TROUBLESHOOTING AND DEMO)
 * A restricted non-expiring `kubectl` access to the Kubernetes cluster. Modify the RBAC of the application service account to control what access you grant to `kubectl`
 * A non-terminating Bash shell within a namespace to troubleshoot networking, services as well as learn about the internal workings of container and Kubernetes technology.
 * Web access to the Bash shell makes it easy for DevOps users.
