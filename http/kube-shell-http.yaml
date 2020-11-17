@@ -97,7 +97,7 @@ spec:
       containers:
       - env:
         - name: CLUSTER_NAME
-          value: democluster.vmware.local
+          value: democluster1.vmware.local
         image: whoami6443/ttyd_nossl:0.0.1
         imagePullPolicy: IfNotPresent
         name: kube-shell
