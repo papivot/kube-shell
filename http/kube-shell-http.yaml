@@ -119,7 +119,7 @@ spec:
           runAsNonRoot: true
           runAsUser: 9999
         volumeMounts:
-        - mountPath: /user/k8soper
+        - mountPath: /user/kshell
           name: cache-volume
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
