@@ -98,7 +98,7 @@ spec:
       - env:
         - name: CLUSTER_NAME
           value: democluster1.vmware.local
-        image: whoami6443/ttyd_nossl:0.0.4
+        image: whoami6443/ttyd_nossl:0.0.5
         imagePullPolicy: IfNotPresent
         name: kube-shell
         ports:
@@ -115,7 +115,6 @@ spec:
           readOnlyRootFilesystem: true
           allowPrivilegeEscalation: false
           privileged: false
-          #runAsNonRoot: false
           runAsNonRoot: true
           runAsUser: 9999
         volumeMounts:
