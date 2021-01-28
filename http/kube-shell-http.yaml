@@ -116,7 +116,7 @@ spec:
           allowPrivilegeEscalation: false
           privileged: false
           #runAsNonRoot: false
-          runAsNonRoot: true
+          #runAsNonRoot: true
           #runAsUser: 9999
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
