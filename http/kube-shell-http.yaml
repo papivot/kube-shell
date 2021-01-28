@@ -98,7 +98,7 @@ spec:
       - env:
         - name: CLUSTER_NAME
           value: democluster1.vmware.local
-        image: whoami6443/ttyd_nossl:0.0.3
+        image: whoami6443/ttyd_nossl:0.0.4
         imagePullPolicy: IfNotPresent
         name: kube-shell
         ports:
