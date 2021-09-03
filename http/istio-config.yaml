@@ -1,0 +1,60 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: k8s-shell-issuer
+  namespace: istio-system
+spec:
+  selfSigned: {}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: k8s-shell-selfsigned-cert
+  namespace: istio-system
+spec:
+  commonName: "kube-shell.env1.lab.test"
+  dnsNames:
+    - "kube-shell.env1.lab.test"
+  secretName: k8s-shell-selfsigned-cert-tls
+  issuerRef:
+    name: k8s-shell-issuer
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: kube-shell-gateway
+  namespace: k8s-shell
+spec:
+  selector:
+    istio: ingressgateway # use Istio default gateway implementation
+  servers:
+  - port:
+      number: 443
+      name: https
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      credentialName: k8s-shell-selfsigned-cert-tls
+    hosts:
+    - "kube-shell.env1.lab.test"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: kube-shell-vs
+  namespace: k8s-shell
+spec:
+  hosts:
+  - "kube-shell.env1.lab.test"
+  gateways:
+  - kube-shell-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        port:
+          number: 80
+        host: kube-shell
