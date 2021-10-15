@@ -147,6 +147,10 @@ metadata:
   name: kube-shell
   namespace: kube-shell
 spec:
+  tls:
+  - secretName: kube-shell-tls
+    hosts:
+    - kube-shell.env1.lab.test
   rules:
   - host: kube-shell.env1.lab.test
     http:
