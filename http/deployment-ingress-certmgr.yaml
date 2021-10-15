@@ -1,0 +1,186 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kube-shell
+  labels:
+    project.name: kube-shell
+    project.app: kube-shell
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kube-shell
+  namespace: kube-shell
+  labels:
+    project.name: kube-shell
+    project.app: kube-shell
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kube-shell
+  labels:
+    project.app: kube-shell
+    project.name: kube-shell
+rules:
+  - apiGroups:
+    - '*'
+    resources:
+    - '*'
+    verbs: ["get", "list", "watch"]
+  - nonResourceURLs:
+    - '*'
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kube-shell
+  labels:
+    project.app: kube-shell
+    project.name: kube-shell
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: kube-shell
+subjects:
+- kind: ServiceAccount
+  name: kube-shell
+  namespace: kube-shell
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/scrape: 'true'
+  labels:
+    project.app: kube-shell
+    project.name: kube-shell
+  name: kube-shell
+  namespace: kube-shell
+spec:
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 7681
+  selector:
+    project.app: kube-shell
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    project.name: kube-shell
+    project.app: kube-shell
+  name: kube-shell
+  namespace: kube-shell
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      project.app: kube-shell
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        project.app: kube-shell
+    spec:
+      containers:
+      - env:
+        - name: CLUSTER_NAME
+          value: kube-shell.env1.lab.test
+        image: harbor-repo.vmware.com/navneetv/ttyd_nossl:0.0.13
+        imagePullPolicy: IfNotPresent
+        name: kube-shell
+        ports:
+        - containerPort: 7681
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 100m
+            memory: 128Mi
+          requests:
+            cpu: 50m
+            memory: 64Mi
+        securityContext:
+          readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
+          privileged: false
+          runAsNonRoot: true
+          runAsUser: 9999
+        volumeMounts:
+        - mountPath: /user/kshell
+          name: cache-volume
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        stdin: true
+        tty: true
+        tty: true
+      volumes:
+      - name: cache-volume
+        emptyDir: {}
+      dnsPolicy: ClusterFirst
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: kube-shell
+      serviceAccountName: kube-shell
+      terminationGracePeriodSeconds: 30
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    projectcontour.io/websocket-routes: "/ws"
+    cert-manager.io/cluster-issuer: letsencrypt-staging
+    ingress.kubernetes.io/force-ssl-redirect: "true"
+    kubernetes.io/ingress.class: contour
+    kubernetes.io/tls-acme: "true"
+  name: kube-shell
+  namespace: kube-shell
+spec:
+  rules:
+  - host: kube-shell.env1.lab.test
+    http:
+      paths:
+      - pathType: Prefix
+        path: /
+        backend:
+          service:
+            name: kube-shell
+            port:
+              number: 80
+      - pathType: Prefix
+        path: /ws
+        backend:
+          service:
+            name: kube-shell
+            port:
+              number: 80
+---
+#apiVersion: projectcontour.io/v1
+#kind: HTTPProxy
+#metadata:
+#  name: kube-shell
+#  namespace: kube-shell
+#spec:
+#  virtualhost:
+#    fqdn: kube-shell.env1.lab.test
+#  routes:
+#  - services:
+#    - name: kube-shell
+#      port: 80
+#  - conditions:
+#    - prefix: /ws
+#    enableWebsockets: true
+#    services:
+#    - name: kube-shell
+#      port: 80
