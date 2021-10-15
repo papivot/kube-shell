@@ -169,6 +169,19 @@ spec:
             name: kube-shell
             port:
               number: 80
+#---
+#apiVersion: cert-manager.io/v1
+#kind: Certificate
+#metadata:
+#  name: kube-shell-cert
+#spec:
+#  commonName: kube-shell.env1.lab.test
+#  dnsNames:
+#  - kube-shell.env1.lab.test
+#  issuerRef:
+#    name: ca-issuer
+#    kind: ClusterIssuer
+#  secretName: kube-shell-tls
 ---
 #apiVersion: projectcontour.io/v1
 #kind: HTTPProxy
@@ -178,6 +191,8 @@ spec:
 #spec:
 #  virtualhost:
 #    fqdn: kube-shell.env1.lab.test
+#    tls:
+#      secretName: kube-shell-tls
 #  routes:
 #  - services:
 #    - name: kube-shell
