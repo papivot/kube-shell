@@ -140,7 +140,7 @@ kind: Ingress
 metadata:
   annotations:
     projectcontour.io/websocket-routes: "/ws"
-    cert-manager.io/cluster-issuer: letsencrypt-staging
+    cert-manager.io/cluster-issuer: ca-issuer
     ingress.kubernetes.io/force-ssl-redirect: "true"
     kubernetes.io/ingress.class: contour
     kubernetes.io/tls-acme: "true"
