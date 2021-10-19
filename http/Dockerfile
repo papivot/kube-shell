@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y autoconf automake curl cmake git libtoo
 FROM ubuntu:18.04
 COPY --from=0 /ttyd/build/ttyd /usr/bin/ttyd
 RUN apt-get update \
-    && apt-get install -y vim net-tools dnsutils curl wget apt-transport-https gnupg2 openssh-client bash-completion && apt-get -y upgrade\
+    && apt-get install -y vim net-tools dnsutils curl wget apt-transport-https gnupg2 iputils-ping iputils-tracepath iproute2 openssh-client bash-completion && apt-get -y upgrade\
     && curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - \
     && echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | tee -a /etc/apt/sources.list.d/kubernetes.list \
     && apt-get update \
