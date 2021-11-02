@@ -98,7 +98,7 @@ spec:
       - env:
         - name: CLUSTER_NAME
           value: kube-shell.env1.lab.test
-        image: harbor-repo.vmware.com/navneetv/ttyd_nossl:0.0.13
+        image: harbor-repo.vmware.com/navneetv/ttyd_nossl:0.1.8
         imagePullPolicy: IfNotPresent
         name: kube-shell
         ports:
