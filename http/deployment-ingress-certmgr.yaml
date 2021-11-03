@@ -118,12 +118,11 @@ spec:
           runAsNonRoot: true
           runAsUser: 9999
 #       volumeMounts:
-        #- mountPath: /user/kshell
-          #name: cache-volume
+#       - mountPath: /user/kshell
+#         name: cache-volume
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
         stdin: true
-        tty: true
         tty: true
       volumes:
       - name: cache-volume

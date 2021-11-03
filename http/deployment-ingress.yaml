@@ -98,7 +98,7 @@ spec:
       - env:
         - name: CLUSTER_NAME
           value: kube-shell.env1.lab.test
-        image: harbor-repo.vmware.com/navneetv/ttyd_nossl:0.1.8
+        image: harbor-repo.vmware.com/navneetv/ttyd_nossl:0.1.10
         imagePullPolicy: IfNotPresent
         name: kube-shell
         ports:
@@ -117,9 +117,9 @@ spec:
           privileged: false
           runAsNonRoot: true
           runAsUser: 9999
-        volumeMounts:
-        - mountPath: /user/kshell
-          name: cache-volume
+#        volumeMounts:
+#        - mountPath: /user/kshell
+#          name: cache-volume
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
         stdin: true
