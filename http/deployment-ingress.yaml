@@ -124,7 +124,6 @@ spec:
         terminationMessagePolicy: File
         stdin: true
         tty: true
-        tty: true
       volumes:
       - name: cache-volume
         emptyDir: {}

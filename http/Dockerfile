@@ -20,9 +20,16 @@ RUN chmod +x /sbin/tini
 
 RUN mkdir -p /user/kshell
 RUN useradd kshell --uid 9999 -M -U --home-dir /user/kshell -s /bin/bash
+
+RUN echo ". /usr/share/bash-completion/bash_completion" >> /user/kshell/.bashrc
 RUN echo "source <(kubectl completion bash)" >> /user/kshell/.bashrc
+RUN echo "export PS1=\"\\e[0;32m[\\u@\\h \\W]\\$ \\e[0m\"" >> /user/kshell/.bashrc
+RUN echo "alias ls=\"ls --color=auto\"" >> /user/kshell/.bashrc
+RUN echo "alias grep=\"grep --color=auto\"" >> /user/kshell/.bashrc
+RUN echo "shopt -s checkwinsize" >> /user/kshell/.bashrc
 RUN chmod +x /user/kshell/.bashrc
 RUN chown kshell:kshell /user/kshell/.bashrc
+
 USER kshell
 WORKDIR /user/kshell
 
