@@ -98,7 +98,7 @@ spec:
       - env:
         - name: CLUSTER_NAME
           value: kube-shell.env1.lab.test
-        image: harbor-repo.vmware.com/navneetv/ttyd_nossl:0.1.10
+        image: whoami6443/ttyd_nossl:0.1.10
         imagePullPolicy: IfNotPresent
         name: kube-shell
         ports:
@@ -124,9 +124,9 @@ spec:
         terminationMessagePolicy: File
         stdin: true
         tty: true
-#      volumes:
-#      - name: cache-volume
-#        emptyDir: {}
+#     volumes:
+#     - name: cache-volume
+#       emptyDir: {}
       dnsPolicy: ClusterFirst
       schedulerName: default-scheduler
       securityContext: {}
@@ -138,14 +138,16 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
-    projectcontour.io/websocket-routes: "/ws"
-    cert-manager.io/cluster-issuer: ca-issuer
-    ingress.kubernetes.io/force-ssl-redirect: "true"
     kubernetes.io/ingress.class: contour
+    projectcontour.io/websocket-routes: "/ws"
+## Comment next 3 lines if not using SSL certs
+    cert-manager.io/cluster-issuer: ca-issuer
+    ingress.kubernetes.io/force-ssl-redirect: "true" 
     kubernetes.io/tls-acme: "true"
   name: kube-shell
   namespace: kube-shell
 spec:
+## Comment next 4 lines if not using SSL certs
   tls:
   - secretName: kube-shell-tls
     hosts:

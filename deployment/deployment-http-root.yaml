@@ -98,8 +98,8 @@ spec:
       containers:
       - env:
         - name: CLUSTER_NAME
-          value: democluster1.vmware.local
-        image: harbor.navneetv.com/whoami6443/ttyd_nossl:0.2.3
+          value: kube-shell.env1.lab.test
+        image: whoami6443/ttyd_nossl:0.2.3
         imagePullPolicy: IfNotPresent
         name: kube-shell
         ports:
