@@ -17,9 +17,20 @@ RUN apt-get update \
 ADD https://github.com/krallin/tini/releases/download/v0.19.0/tini /sbin/tini
 RUN chmod +x /sbin/tini
 
-RUN echo ". /usr/share/bash-completion/bash_completion" >> /etc/bash.bashrc
-RUN echo "source <(kubectl completion bash)" >> /etc/bash.bashrc
-RUN sed -i 's/#force_color_prompt=yes/force_color_prompt=yes/' /root/.bashrc
+RUN mkdir -p /user/kshell
+RUN useradd kshell --uid 9999 -M -U --home-dir /user/kshell -s /bin/bash
+
+RUN echo ". /usr/share/bash-completion/bash_completion" >> /user/kshell/.bashrc
+RUN echo "source <(kubectl completion bash)" >> /user/kshell/.bashrc
+RUN echo "export PS1=\"\\e[0;32m[\\u@\\h \\W]\\$ \\e[0m\"" >> /user/kshell/.bashrc
+RUN echo "alias ls=\"ls --color=auto\"" >> /user/kshell/.bashrc
+RUN echo "alias grep=\"grep --color=auto\"" >> /user/kshell/.bashrc
+RUN echo "shopt -s checkwinsize" >> /user/kshell/.bashrc
+RUN chmod +x /user/kshell/.bashrc
+RUN chown kshell:kshell /user/kshell/.bashrc
+
+USER kshell
+WORKDIR /user/kshell
 
 EXPOSE 7681
 ENTRYPOINT ["/sbin/tini", "--"]
