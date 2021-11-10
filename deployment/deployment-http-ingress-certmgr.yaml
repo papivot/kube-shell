@@ -60,13 +60,13 @@ metadata:
   namespace: kube-shell
 spec:
   ports:
-    - name: https
-      port: 443
+    - name: http
+      port: 80
       protocol: TCP
       targetPort: 7681
   selector:
     project.app: kube-shell
-  type: LoadBalancer
+  type: ClusterIP
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -97,8 +97,8 @@ spec:
       containers:
       - env:
         - name: CLUSTER_NAME
-          value: democluster.vmware.local
-        image: whoami6443/ttyd_ssl:0.0.5
+          value: kube-shell.env1.lab.test
+        image: harbor-repo.vmware.com/navneetv/ttyd_nossl:0.1.10
         imagePullPolicy: IfNotPresent
         name: kube-shell
         ports:
@@ -117,24 +117,75 @@ spec:
           privileged: false
           runAsNonRoot: true
           runAsUser: 9999
-        volumeMounts:
-        - mountPath: /etc/ttyd_certs
-          name: ssl-pem
-        - mountPath: /user/kshell
-          name: cache-volume
+#       volumeMounts:
+#       - mountPath: /user/kshell
+#         name: cache-volume
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
         stdin: true
         tty: true
-      volumes:
-      - name: ssl-pem
-        secret:
-          secretName: ssl-pem
-      - name: cache-volume
-        emptyDir: {}  
+#      volumes:
+#      - name: cache-volume
+#        emptyDir: {}
       dnsPolicy: ClusterFirst
       schedulerName: default-scheduler
       securityContext: {}
       serviceAccount: kube-shell
       serviceAccountName: kube-shell
       terminationGracePeriodSeconds: 30
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    projectcontour.io/websocket-routes: "/ws"
+    cert-manager.io/cluster-issuer: ca-issuer
+    ingress.kubernetes.io/force-ssl-redirect: "true"
+    kubernetes.io/ingress.class: contour
+    kubernetes.io/tls-acme: "true"
+  name: kube-shell
+  namespace: kube-shell
+spec:
+  tls:
+  - secretName: kube-shell-tls
+    hosts:
+    - kube-shell.env1.lab.test
+  rules:
+  - host: kube-shell.env1.lab.test
+    http:
+      paths:
+      - pathType: Prefix
+        path: /
+        backend:
+          service:
+            name: kube-shell
+            port:
+              number: 80
+      - pathType: Prefix
+        path: /ws
+        backend:
+          service:
+            name: kube-shell
+            port:
+              number: 80
+---
+#apiVersion: projectcontour.io/v1
+#kind: HTTPProxy
+#metadata:
+#  name: kube-shell
+#  namespace: kube-shell
+#spec:
+#  virtualhost:
+#    fqdn: kube-shell.env1.lab.test
+#    tls:
+#      secretName: kube-shell-tls
+#  routes:
+#  - services:
+#    - name: kube-shell
+#      port: 80
+#  - conditions:
+#    - prefix: /ws
+#    enableWebsockets: true
+#    services:
+#    - name: kube-shell
+#      port: 80

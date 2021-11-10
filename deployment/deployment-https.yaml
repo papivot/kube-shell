@@ -60,8 +60,8 @@ metadata:
   namespace: kube-shell
 spec:
   ports:
-    - name: http
-      port: 80
+    - name: https
+      port: 443
       protocol: TCP
       targetPort: 7681
   selector:
@@ -97,8 +97,8 @@ spec:
       containers:
       - env:
         - name: CLUSTER_NAME
-          value: democluster1.vmware.local
-        image: harbor.navneetv.com/whoami6443/ttyd_nossl:0.1.10
+          value: kube-shell.env1.lab.test
+        image: whoami6443/ttyd_ssl:0.0.5
         imagePullPolicy: IfNotPresent
         name: kube-shell
         ports:
@@ -117,16 +117,21 @@ spec:
           privileged: false
           runAsNonRoot: true
           runAsUser: 9999
-#       volumeMounts:
-#       - mountPath: /user/kshell
-#         name: cache-volume
+        volumeMounts:
+        - mountPath: /etc/ttyd_certs
+          name: ssl-pem
+#        - mountPath: /user/kshell
+#          name: cache-volume
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
         stdin: true
         tty: true
       volumes:
-      - name: cache-volume
-        emptyDir: {}  
+      - name: ssl-pem
+        secret:
+          secretName: ssl-pem
+#      - name: cache-volume
+#        emptyDir: {}  
       dnsPolicy: ClusterFirst
       schedulerName: default-scheduler
       securityContext: {}
