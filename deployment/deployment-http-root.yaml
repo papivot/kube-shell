@@ -99,6 +99,7 @@ spec:
       - env:
         - name: CLUSTER_NAME
           value: kube-shell.env1.lab.test
+        - name: TINI_SUBREAPER
         image: whoami6443/ttyd_nossl:0.2.3
         imagePullPolicy: IfNotPresent
         name: kube-shell
