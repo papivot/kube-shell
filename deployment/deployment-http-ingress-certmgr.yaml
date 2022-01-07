@@ -1,16 +1,16 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: kube-shell
+  name: k8s-papivot-tools
   labels:
-    project.name: kube-shell
-    project.app: kube-shell
+    project.name: k8s-papivot-tools
+    project.app: k8s-papivot-tools
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: kube-shell
-  namespace: kube-shell
+  namespace: k8s-papivot-tools
   labels:
     project.name: kube-shell
     project.app: kube-shell
@@ -46,7 +46,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: kube-shell
-  namespace: kube-shell
+  namespace: k8s-papivot-tools
 ---
 apiVersion: v1
 kind: Service
@@ -57,7 +57,7 @@ metadata:
     project.app: kube-shell
     project.name: kube-shell
   name: kube-shell
-  namespace: kube-shell
+  namespace: k8s-papivot-tools
 spec:
   ports:
     - name: http
@@ -75,7 +75,7 @@ metadata:
     project.name: kube-shell
     project.app: kube-shell
   name: kube-shell
-  namespace: kube-shell
+  namespace: k8s-papivot-tools
 spec:
   progressDeadlineSeconds: 600
   replicas: 1
@@ -145,7 +145,7 @@ metadata:
     ingress.kubernetes.io/force-ssl-redirect: "true" 
     kubernetes.io/tls-acme: "true"
   name: kube-shell
-  namespace: kube-shell
+  namespace: k8s-papivot-tools
 spec:
 ## Comment next 4 lines if not using SSL certs
   tls:
@@ -175,7 +175,7 @@ spec:
 #kind: HTTPProxy
 #metadata:
 #  name: kube-shell
-#  namespace: kube-shell
+#  namespace: k8s-papivot-tools
 #spec:
 #  virtualhost:
 #    fqdn: kube-shell.env1.lab.test
