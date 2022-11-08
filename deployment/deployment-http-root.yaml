@@ -66,7 +66,8 @@ spec:
       targetPort: 7681
   selector:
     project.app: kube-shell
-  type: LoadBalancer
+#  type: LoadBalancer
+  type: ClusterIP
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -133,3 +134,49 @@ spec:
       serviceAccount: kube-shell
       serviceAccountName: kube-shell
       terminationGracePeriodSeconds: 30
+---
+# Uncomment ClusterIssuer and Certificate below for SelfSigned certs
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: ca-issuer-selfsigned
+spec:
+  selfSigned: {}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: kube-shell-cert
+  namespace: k8s-papivot-tools
+spec:
+  commonName: kube-shell.env1.lab.test
+#  commonName: kube-shell.{{ENVOY_KB_IP}}.nip.io
+  dnsNames:
+  - kube-shell.env1.lab.test
+#  - kube-shell.{{ENVOY_KB_IP}}.nip.io
+  issuerRef:
+    name: ca-issuer-selfsigned
+    kind: ClusterIssuer
+  secretName: kube-shell-tls
+---
+apiVersion: projectcontour.io/v1
+kind: HTTPProxy
+metadata:
+  name: kube-shell
+  namespace: k8s-papivot-tools
+spec:
+  virtualhost:
+    fqdn: kube-shell.env1.lab.test
+#    fqdn: kube-shell.{{ENVOY_KB_IP}}.nip.io
+    tls:
+      secretName: kube-shell-tls
+  routes:
+  - services:
+    - name: kube-shell
+      port: 80
+  - conditions:
+    - prefix: /ws
+    enableWebsockets: true
+    services:
+    - name: kube-shell
+      port: 80

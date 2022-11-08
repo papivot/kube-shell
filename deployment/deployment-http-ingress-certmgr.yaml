@@ -134,60 +134,85 @@ spec:
       serviceAccountName: kube-shell
       terminationGracePeriodSeconds: 30
 ---
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  annotations:
-    kubernetes.io/ingress.class: contour
-    projectcontour.io/websocket-routes: "/ws"
-## Comment next 3 lines if not using SSL certs
-    cert-manager.io/cluster-issuer: ca-issuer
-    ingress.kubernetes.io/force-ssl-redirect: "true" 
-    kubernetes.io/tls-acme: "true"
-  name: kube-shell
-  namespace: k8s-papivot-tools
-spec:
-## Comment next 4 lines if not using SSL certs
-  tls:
-  - secretName: kube-shell-tls
-    hosts:
-    - kube-shell.env1.lab.test
-  rules:
-  - host: kube-shell.env1.lab.test
-    http:
-      paths:
-      - pathType: Prefix
-        path: /
-        backend:
-          service:
-            name: kube-shell
-            port:
-              number: 80
-      - pathType: Prefix
-        path: /ws
-        backend:
-          service:
-            name: kube-shell
-            port:
-              number: 80
----
-#apiVersion: projectcontour.io/v1
-#kind: HTTPProxy
+#apiVersion: networking.k8s.io/v1
+#kind: Ingress
 #metadata:
+#  annotations:
+#    kubernetes.io/ingress.class: contour
+#    projectcontour.io/websocket-routes: "/ws"
+## Comment next 3 lines if not using SSL certs
+#    cert-manager.io/cluster-issuer: ca-issuer
+#    ingress.kubernetes.io/force-ssl-redirect: "true" 
+#    kubernetes.io/tls-acme: "true"
 #  name: kube-shell
 #  namespace: k8s-papivot-tools
 #spec:
-#  virtualhost:
-#    fqdn: kube-shell.env1.lab.test
-#    tls:
-#      secretName: kube-shell-tls
-#  routes:
-#  - services:
-#    - name: kube-shell
-#      port: 80
-#  - conditions:
-#    - prefix: /ws
-#    enableWebsockets: true
-#    services:
-#    - name: kube-shell
-#      port: 80
+## Comment next 4 lines if not using SSL certs
+#  tls:
+#  - secretName: kube-shell-tls
+#    hosts:
+#    - kube-shell.env1.lab.test
+#  rules:
+#  - host: kube-shell.env1.lab.test
+#    http:
+#      paths:
+#      - pathType: Prefix
+#        path: /
+#        backend:
+#          service:
+#            name: kube-shell
+#            port:
+#              number: 80
+#      - pathType: Prefix
+#        path: /ws
+#        backend:
+#          service:
+#            name: kube-shell
+#            port:
+#              number: 80
+---
+# Uncomment ClusterIssuer and Certificate below for SelfSigned certs
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: ca-issuer-selfsigned
+spec:
+  selfSigned: {}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: kube-shell-cert
+  namespace: k8s-papivot-tools
+spec:
+  commonName: kube-shell.env1.lab.test
+#  commonName: kube-shell.{{ENVOY_KB_IP}}.nip.io
+  dnsNames:
+  - kube-shell.env1.lab.test
+#  - kube-shell.{{ENVOY_KB_IP}}.nip.io
+  issuerRef:
+    name: ca-issuer-selfsigned
+    kind: ClusterIssuer
+  secretName: kube-shell-tls
+---
+apiVersion: projectcontour.io/v1
+kind: HTTPProxy
+metadata:
+  name: kube-shell
+  namespace: k8s-papivot-tools
+spec:
+  virtualhost:
+    fqdn: kube-shell.env1.lab.test
+#    fqdn: kube-shell.{{ENVOY_KB_IP}}.nip.io
+    tls:
+      secretName: kube-shell-tls
+  routes:
+  - services:
+    - name: kube-shell
+      port: 80
+  - conditions:
+    - prefix: /ws
+    enableWebsockets: true
+    services:
+    - name: kube-shell
+      port: 80
