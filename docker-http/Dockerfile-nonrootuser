@@ -1,24 +1,26 @@
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update \
-    && apt-get install -y vim net-tools dnsutils curl wget apt-transport-https gnupg2 traceroute tcpdump jq iproute2 openssh-client bash-completion && apt-get -y upgrade\
+    && apt-get install -y vim net-tools dnsutils curl wget apt-transport-https gnupg2 traceroute tcpdump jq iproute2 openssh-client bash-completion\
+    && apt-get -y upgrade\
     && curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"\
     && install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl\
-    && rm -f kubectl
+    && rm -f kubectl\
+    && rm -rf /var/lib/apt/lists/*
 
 ADD https://github.com/tsl0922/ttyd/releases/download/1.7.2/ttyd.x86_64 /usr/bin/ttyd
-RUN chmod +x /usr/bin/ttyd
-
 ADD https://github.com/krallin/tini/releases/download/v0.19.0/tini /sbin/tini
-RUN chmod +x /sbin/tini
 
-RUN mkdir -p /user
-RUN useradd kshell --create-home --uid 9999 -U --home-dir /user/kshell --base-dir /user -s /usr/bin/bash
+RUN chmod +x /usr/bin/ttyd\
+    && chmod +x /sbin/tini
 
-RUN echo "source /usr/share/bash-completion/bash_completion" >> /etc/bash.bashrc
-RUN echo "source <(kubectl completion bash)" >> /etc/bash.bashrc
-RUN sed -i 's/#force_color_prompt=yes/force_color_prompt=yes/' /user/kshell/.bashrc
+RUN mkdir -p /user\
+    && useradd kshell --create-home --uid 9999 -U --home-dir /user/kshell --base-dir /user -s /usr/bin/bash
+
+RUN echo "source /usr/share/bash-completion/bash_completion" >> /etc/bash.bashrc\
+    && echo "source <(kubectl completion bash)" >> /etc/bash.bashrc\
+    && sed -i 's/#force_color_prompt=yes/force_color_prompt=yes/' /user/kshell/.bashrc
 
 USER kshell
 WORKDIR /user/kshell
