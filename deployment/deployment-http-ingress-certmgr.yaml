@@ -99,7 +99,7 @@ spec:
         - name: CLUSTER_NAME
           value: kube-shell.env1.lab.test
         - name: TINI_SUBREAPER
-        image: whoami6443/ttyd_nossl_nonroot:0.5.0
+        image: harbor-repo.vmware.com/navneetv/ttyd_nossl_nonroot:0.4.8
         imagePullPolicy: IfNotPresent
         name: kube-shell
         ports:
@@ -125,9 +125,9 @@ spec:
         terminationMessagePolicy: File
         stdin: true
         tty: true
-#     volumes:
-#     - name: cache-volume
-#       emptyDir: {}
+      volumes:
+      - name: cache-volume
+        emptyDir: {}
       dnsPolicy: ClusterFirst
       schedulerName: default-scheduler
       securityContext: {}
@@ -135,85 +135,71 @@ spec:
       serviceAccountName: kube-shell
       terminationGracePeriodSeconds: 30
 ---
-#apiVersion: networking.k8s.io/v1
-#kind: Ingress
-#metadata:
-#  annotations:
-#    kubernetes.io/ingress.class: contour
-#    projectcontour.io/websocket-routes: "/ws"
-## Comment next 3 lines if not using SSL certs
-#    cert-manager.io/cluster-issuer: ca-issuer
-#    ingress.kubernetes.io/force-ssl-redirect: "true" 
-#    kubernetes.io/tls-acme: "true"
-#  name: kube-shell
-#  namespace: k8s-papivot-tools
-#spec:
-## Comment next 4 lines if not using SSL certs
-#  tls:
-#  - secretName: kube-shell-tls
-#    hosts:
-#    - kube-shell.env1.lab.test
-#  rules:
-#  - host: kube-shell.env1.lab.test
-#    http:
-#      paths:
-#      - pathType: Prefix
-#        path: /
-#        backend:
-#          service:
-#            name: kube-shell
-#            port:
-#              number: 80
-#      - pathType: Prefix
-#        path: /ws
-#        backend:
-#          service:
-#            name: kube-shell
-#            port:
-#              number: 80
----
-# Uncomment ClusterIssuer and Certificate below for SelfSigned certs
-apiVersion: cert-manager.io/v1
-kind: ClusterIssuer
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
-  name: ca-issuer-selfsigned
-spec:
-  selfSigned: {}
----
-apiVersion: cert-manager.io/v1
-kind: Certificate
-metadata:
-  name: kube-shell-cert
-  namespace: k8s-papivot-tools
-spec:
-  commonName: kube-shell.env1.lab.test
-#  commonName: kube-shell.{{ENVOY_KB_IP}}.nip.io
-  dnsNames:
-  - kube-shell.env1.lab.test
-#  - kube-shell.{{ENVOY_KB_IP}}.nip.io
-  issuerRef:
-    name: ca-issuer-selfsigned
-    kind: ClusterIssuer
-  secretName: kube-shell-tls
----
-apiVersion: projectcontour.io/v1
-kind: HTTPProxy
-metadata:
+  annotations:
+    projectcontour.io/websocket-routes: "/ws"
+    cert-manager.io/cluster-issuer: ca-issuer
+    ingress.kubernetes.io/force-ssl-redirect: "true"
+    kubernetes.io/ingress.class: contour
+    kubernetes.io/tls-acme: "true"
   name: kube-shell
   namespace: k8s-papivot-tools
 spec:
-  virtualhost:
-    fqdn: kube-shell.env1.lab.test
-#    fqdn: kube-shell.{{ENVOY_KB_IP}}.nip.io
-    tls:
-      secretName: kube-shell-tls
-  routes:
-  - services:
-    - name: kube-shell
-      port: 80
-  - conditions:
-    - prefix: /ws
-    enableWebsockets: true
-    services:
-    - name: kube-shell
-      port: 80
+  tls:
+  - secretName: kube-shell-tls
+    hosts:
+    - kube-shell.env1.lab.test
+  rules:
+  - host: kube-shell.env1.lab.test
+    http:
+      paths:
+      - pathType: Prefix
+        path: /
+        backend:
+          service:
+            name: kube-shell
+            port:
+              number: 80
+      - pathType: Prefix
+        path: /ws
+        backend:
+          service:
+            name: kube-shell
+            port:
+              number: 80
+#---
+#apiVersion: cert-manager.io/v1
+#kind: Certificate
+#metadata:
+#  name: kube-shell-cert
+#spec:
+#  commonName: kube-shell.env1.lab.test
+#  dnsNames:
+#  - kube-shell.env1.lab.test
+#  issuerRef:
+#    name: ca-issuer
+#    kind: ClusterIssuer
+#  secretName: kube-shell-tls
+---
+#apiVersion: projectcontour.io/v1
+#kind: HTTPProxy
+#metadata:
+#  name: kube-shell
+#  namespace: k8s-papivot-tools
+#spec:
+#  virtualhost:
+#    fqdn: kube-shell.env1.lab.test
+#    tls:
+#      secretName: kube-shell-tls
+#  routes:
+#  - services:
+#    - name: kube-shell
+#      port: 80
+#  - conditions:
+#    - prefix: /ws
+#    enableWebsockets: true
+#    services:
+#    - name: kube-shell
+#      port: 80
