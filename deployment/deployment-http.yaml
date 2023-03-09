@@ -99,7 +99,7 @@ spec:
         - name: CLUSTER_NAME
           value: kube-shell.env1.lab.test
         - name: TINI_SUBREAPER
-        image: whoami6443/ttyd_nossl_nonroot:0.5.0
+        image: harbor.navneetv.com/whoami6443/ttyd_nossl_nonroot:0.5.0
         imagePullPolicy: IfNotPresent
         name: kube-shell
         ports:
