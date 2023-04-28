@@ -1,7 +1,7 @@
 FROM ubuntu:22.04
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update \
+RUN apt-get update\
     && apt-get install -y vim net-tools dnsutils curl wget apt-transport-https gnupg2 traceroute tcpdump jq iproute2 openssh-client bash-completion\
     && apt-get -y upgrade\
     && curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"\
