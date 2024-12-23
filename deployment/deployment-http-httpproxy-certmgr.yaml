@@ -172,7 +172,7 @@ spec:
 #            port:
 #              number: 80
 ---
-# Uncomment ClusterIssuer and Certificate below for SelfSigned certs
+# Uncomment ClusterIssuer and Certificate below for Self Signed certs
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
